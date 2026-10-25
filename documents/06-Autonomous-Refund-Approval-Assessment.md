@@ -33,7 +33,7 @@ Review what SupportBot needs to do, what its access allows, what could go wrong,
 |---|---|---|
 | **Access beyond its role** | SupportBot can issue refunds even though its job does not include refund decisions. | Remove refund access unless the business approves a new role and checks the controls. |
 | **Stolen credentials** | Someone with its token could use its refund access. No owner is assigned to manage that access. | Assign an owner, protect credentials, separate production and staging, and test that access can be removed. |
-| **Wrong or manipulated decisions** | False information or malicious instructions could lead to an improper refund. No such attack is confirmed. | The billing system must check eligibility, requester access, and refund limits. Instructions to the AI are not enough. |
+| **Wrong or manipulated decisions** | False information or malicious instructions like prompt injection could lead to an improper refund. No such attack is confirmed. | The billing system must check eligibility, requester access, and refund limits. Instructions to the AI are not enough. |
 | **Repeated refunds and missing records** | A $500 limit does not stop many smaller refunds. Total limits and protected approval records are not shown. | Check for duplicates, limit total refunds, and keep records the agent cannot change or delete. |
 
 ## Decision and Proposed Approval Rule
@@ -42,15 +42,15 @@ Review what SupportBot needs to do, what its access allows, what could go wrong,
 
 If the business adds refund approval to its role, allow it only within clear rules:
 
-| The agent may approve when | A human must review when |
+|The agent may approve only when all conditions below are met | An authorised human must review when |
 |---|---|
 | Trusted payment records confirm the claim meets the refund policy. | Information is missing, conflicting, or needs an exception. |
 | The requester is allowed to request a refund for that account and payment. | The requester’s access needs checking. |
 | The amount is within approved individual and total limits. | Either limit would be exceeded. |
 | The refund is not a duplicate and returns to the original payment method. | A duplicate is suspected or another destination is requested. |
-| The billing system checks the rules and records the approval. | The request is outside the agent’s approved role. |
+|The business has explicitly authorised the agent to approve this type of refund. | The request is outside the agent’s approved role. |
 
-**Enforcement:** The AI saying “approved” must not be enough to send money. The billing system must check the rules before accepting approval. If checks or records are unavailable, automatic processing stops. Human review must resolve missing checks before proceeding.
+**Enforcement:** The AI saying “approved” must not be enough to issue the refund. The billing system must check the rules before accepting approval. If checks or records are unavailable, automatic processing stops. Human review must resolve missing checks before proceeding.
 
 **Ownership and testing:** Finance sets the refund rules and limits. A named technical owner manages the agent’s access and credentials. Before access is granted, test that the system blocks unauthorised, duplicate, changed, and over-limit requests, protects records, and stops access when revoked.
 
