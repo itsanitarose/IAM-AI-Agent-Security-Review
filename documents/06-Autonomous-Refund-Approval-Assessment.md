@@ -2,6 +2,25 @@
 
 *An AI Security and IAM Risk Assessment*
 
+---
+
+## My Starting Perspective — Experience in Billing and Payment Support
+
+My initial answer to this question was **no**.
+
+That response was influenced by my experience working in BT's billing and payment support teams.
+
+I understood the difference between handling a billing enquiry and having the authority to approve and issue a refund. Colleagues could identify a potential billing issue and transfer the customer to someone with the appropriate permissions. In my role, I could investigate the account, determine whether a refund was justified, and issue it.
+
+The decision was not always straightforward. Sometimes the information visible on the account did not tell the full story. Reviewing the customer's history, contract or sales call could change the outcome.
+
+Because of that experience, I was concerned about giving an AI agent independent refund approval authority.
+
+However, I realised I had answered the question largely from my previous operational experience and the awareness that AI agents can also hallucinate, misinterpret billing information, overlook important customer circumstances or make incorrect eligibility decisions, rather than first examining it through a structured security assessment.
+
+I wanted to challenge my initial position and consider the question from an IAM and AI security risk perspective before reaching a conclusion.
+
+
 ## Purpose
 
 Assess when an AI agent should be allowed to approve refunds, when a human should decide, and when access should be denied.
@@ -57,3 +76,17 @@ If the business adds refund approval to its role, allow it only within clear rul
 **Ongoing review:** Monitor refunds and review access regularly and after changes. Suspend access if compromise is suspected or controls fail. Remove it when no longer needed. The responsible business owner must accept any remaining risk before the agent starts approving refunds.
 
 **Autonomous refund approval should depend on a defined role, enforced limits, a named owner, and a clear record of every decision.**
+---
+
+## My Final Answer
+Should an AI Agent Ever Approve Refunds on Its Own?
+
+**No - SupportBot should not approve refunds in its current state.**
+
+Refund authority falls outside its intended role. The scenario also identifies excessive permissions, inadequate identity governance, two refunds without recorded human approval, and a separate token-compromise concern involving patient records. These findings raise serious questions about its security and accountability.
+
+There is also the risk of AI decision-making errors. An agent can hallucinate, misunderstand customer circumstances or rely on incomplete or misleading evidence. Even when it has legitimate approval permissions, it could incorrectly determine that a customer qualifies for a refund.
+
+**Potentially yes for an AI agent specifically authorised to approve refunds**, but only with a legitimate business purpose, least-privilege access, independently enforced eligibility rules, tested safeguards, appropriate human escalation and acceptable residual risk.
+
+**My boundary:** An AI agent's permission to approve a refund must never be mistaken for proof that its approval decision is correct.
