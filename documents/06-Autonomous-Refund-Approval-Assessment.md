@@ -77,16 +77,17 @@ If the business adds refund approval to its role, allow it only within clear rul
 
 **Autonomous refund approval should depend on a defined role, enforced limits, a named owner, and a clear record of every decision.**
 ---
-
 ## My Final Answer
-Should an AI Agent Ever Approve Refunds on Its Own?
 
-**No - SupportBot should not approve refunds in its current state.**
+**Potentially yes — but only under strict, risk-based security controls.**
 
-Refund authority falls outside its intended role. The scenario also identifies excessive permissions, inadequate identity governance, two refunds without recorded human approval, and a separate token-compromise concern involving patient records. These findings raise serious questions about its security and accountability.
+An AI agent can hallucinate, misinterpret billing information or be manipulated through prompt injection. If it has excessive permissions or its identity is compromised, the consequences could include incorrect refunds, financial loss or exposure of sensitive customer information.
 
-There is also the risk of AI decision-making errors. An agent can hallucinate, misunderstand customer circumstances or rely on incomplete or misleading evidence. Even when it has legitimate approval permissions, it could incorrectly determine that a customer qualifies for a refund.
+The Northwind Health case illustrates this risk. **SupportBot's assigned duties did not include issuing refunds, yet it had permission to do so, and two refunds were recorded without documented human approval.** This highlights why an AI agent's access entitlements must align with its authorised business role.
 
-**Potentially yes for an AI agent specifically authorised to approve refunds**, but only with a legitimate business purpose, least-privilege access, independently enforced eligibility rules, tested safeguards, appropriate human escalation and acceptable residual risk.
+And more AI agent's permission to approve a refund must never be mistaken for proof that its approval decision is correct.
 
-**My boundary:** An AI agent's permission to approve a refund must never be mistaken for proof that its approval decision is correct.
+**From an IAM  perspective, I would only recommend provisioning refund approval access after validating the business justification, reviewing the agent's entitlements and confirming that least privilege, separation of duties, independent authorisation checks, audit logging and access revocation controls are in place.** These controls would need to be tested, with higher-risk or exceptional transactions subject to additional approval.
+
+**My answer is potentially yes, but never by default.**
+
