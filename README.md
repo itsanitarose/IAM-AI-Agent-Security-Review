@@ -1,79 +1,85 @@
-# IAM AI Agent Security Review | Northwind Health
+# IAM: The Agent With Too Many Keys
 
-*A fictional Identity and Access Management (IAM) case study focused on AI agent permissions, non-human identity governance, credential security and suspicious activity.*
+## The Scenario
 
-## Overview
+It's my third week on the security team at Northwind Health, and the company has started introducing AI agents across its teams.
 
-Northwind Health is a healthcare SaaS company supporting approximately 400 clinics and handling sensitive patient information.
+One of them, **SupportBot**, was launched to help clinic staff with appointment and billing questions, but nobody has reviewed its access since it was created.
 
-The Support team introduced an AI agent called SupportBot to answer appointment and billing questions, create support tickets and draft responses for human approval.
+### 🎫 The Ticket
 
-However, SupportBot's access had not been reviewed since deployment. Its service account had excessive permissions, no assigned owner and an API token that had never been rotated.
+**Manager's Request:**
 
-I reviewed SupportBot's nine permissions, assessed its identity governance weaknesses, examined suspicious activity and recommended controls to reduce the risks.
+> "Support launched an AI agent called SupportBot last year. Nobody ever reviewed its access. I need you to review what it can do, tell me what's wrong with how it's set up, and check last week's activity. Then show me what it should look like."
 
-**The objective:** Identify unnecessary access, improve accountability for the AI agent's identity and design safer controls for its operation.
+## My Investigation
 
-## Key Findings
+SupportBot operates through a service account and API token. It was created 14 months ago by a contractor who has since left, has no named owner and uses a token that never expires.
 
-| Severity | Count | Findings |
-|---|---:|---|
-| 🔴 High | 4 | No identity owner, non-expiring API token, shared production/staging credential and no periodic access review |
-| 🔴 High | 1 | Suspicious access to 1,900 patient records in four minutes from an unfamiliar IP address |
-| 🟠 Significant | — | Excessive access to patient records, payment data and refund functionality |
+It also has nine permissions, including access to full patient records and the ability to issue refunds without human approval.
 
-*Severity classifications are qualitative assessments based on the scenario. The unusual activity is an indicator of potential compromise, not confirmation of a breach.*
+Four questions guided my investigation:
 
-## Top Priority — Suspicious Patient-Record Access
+- **Does SupportBot need every permission it has?**
+- **Who is responsible for an AI agent's identity and credentials?**
+- **Does its recent activity suggest that something is wrong?**
+- **How can we secure the agent without stopping it from helping clinic staff?**
 
-On Tuesday between 03:12 and 03:16, SupportBot accessed **1,900 patient records in four minutes** from an unfamiliar IP address.
+## What I Noticed
 
-Although its weekly patient-record access was within the stated normal range, this specific activity warranted immediate investigation.
+Three findings immediately concerned me.
 
-I recommended escalating the event to the incident-response team, containing the potentially compromised credential while preserving evidence, and reviewing authentication and API activity to determine the extent of possible exposure.
+| Area | Finding |
+|:-----|:--------|
+| **Identity governance** | No named owner, no access review and a non-expiring token |
+| **Excessive permissions** | Access to sensitive patient data and financial actions beyond its support role |
+| **Suspicious activity** | 1,900 patient records accessed in four minutes from an unfamiliar IP address |
 
-The available evidence does not confirm that a breach occurred.
+The last finding needed particular attention.
 
-## Project Structure
+Tuesday's activity raised concerns about an **ongoing risk of data exfiltration** ([Fundamentals of AI Security](https://learn.microsoft.com/en-us/training/modules/fundamentals-ai-security/7-data-exfiltration) makes this really clear).
 
-| Document | Purpose |
-|---|---|
-| 01 — Scenario and Scope | Defines the business context, objectives and assessment boundaries |
-| 02 — Permission Review | Evaluates all nine permissions against SupportBot's intended responsibilities |
-| 03 — Identity Governance Findings | Documents identity ownership, credential and access-review weaknesses |
-| 04 — Suspicious Activity Assessment | Examines the unusual access event and recommended initial response |
-| 05 — Recommended Security Controls | Proposes the target-state identity and access controls |
-| Job Requirements Map | Connects the project evidence to relevant IAM skills |
+The activity doesn't match SupportBot's normal support duties, but **the evidence doesn't confirm that data was stolen**.
 
-## IAM Skills Demonstrated
+I would treat it as a suspected compromise, recommend immediate containment and work with the incident-response team to examine the access logs and determine what patient information may have been exposed.
 
-- Non-human identity and service-account security assessment
-- Least-privilege permission review
-- API token lifecycle risk identification
-- Identity ownership and access governance
-- Production and staging environment separation
-- Suspicious access analysis and incident-response recommendations
-- Separation of duties and human approval controls
-- Security documentation and risk-based recommendations
+## My Approach
 
-## What I Learned
+I reviewed SupportBot's nine permissions against its actual responsibilities and examined the risks created by its identity setup.
 
-This project helped me understand how IAM principles apply to AI agents, not just human users.
+I also researched AI agent security guidance from **Microsoft Learn** and **OWASP**, focusing on least privilege, credential security, human oversight and monitoring.
 
-An AI agent may perform useful business tasks, but its identity still needs an accountable owner, appropriate permissions, secure credentials and regular reviews.
+My proposed approach includes restricting sensitive data access, removing unnecessary financial authority, improving token security and introducing clear ownership and review processes.
 
-I also learned the importance of distinguishing suspicious activity from a confirmed security incident.
+For high-impact actions such as refunds, **SupportBot should assist with the request, while an authorised human makes the financial decision.**
 
-The area I found most challenging was understanding API token lifecycle management, particularly how expiration, rotation and revocation work in practice.
+## What This Case Study Covers
 
-## What I Would Improve
+- A permission-by-permission review of SupportBot's access.
+- Governance findings affecting its identity and API token.
+- Analysis of Tuesday's suspicious activity and three immediate response actions.
+- A proposed set of controls for securing the AI agent.
 
-With access to a suitable test environment, I would:
+## What I'm Learning
 
-- Configure a non-human identity with restricted permissions.
-- Test API token expiration, rotation and revocation.
-- Validate separation between production and staging identities.
-- Test whether sensitive actions require human approval.
-- Review authentication and API logs to verify that monitoring controls work.
+I've been interested in AI security for some time, but investigating SupportBot confirmed that I want to explore it further.
 
-These practical exercises would help me validate the proposed controls rather than relying solely on scenario-based analysis.
+My first assessment identified the risks, but I realised that recognising suspicious activity and knowing **exactly how to respond technically** are two different things.
+
+That pushed me to research API token expiration, rotation and revocation, alongside the security controls needed for non-human identities.
+
+I'm using what I learn to revisit my initial recommendations and make them more specific.
+
+**The lesson I'm taking forward is that identifying a risk is only the beginning. I also need to understand how the proposed control works and whether it would actually reduce that risk.**
+
+## Explore the Investigation
+
+*Supporting documents will be linked here as the investigation develops.*
+
+<br>
+
+---
+
+[← Week 2: Permission Sprawl & RBAC](https://github.com/itsanitarose/IAM-Permission-Sprawl-RBAC) · [All Case Studies](https://github.com/itsanitarose/IAM-Case-Studies)
+
+*Northwind Health is fictional. This is a portfolio assessment; no live production systems were changed.*
