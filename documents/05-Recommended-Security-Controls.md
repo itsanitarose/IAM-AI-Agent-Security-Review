@@ -1,133 +1,66 @@
-# 05 — Recommended Security Controls
+# 05. Security Controls & Target State
 
-**Project:** Northwind Health | AI Agent Security Review  
-**Identity:** `svc-supportbot`
+## 1. Designing Safer Access for SupportBot
+
+After reviewing SupportBot's permissions, identity governance and suspicious activity, I wanted to understand what a safer setup would look like.
+
+My aim isn't to stop the agent from helping clinic staff. It's to give SupportBot **only the access it needs**, make someone accountable for that access and ensure sensitive actions can't happen without proper authorisation.
+
+I used the [OWASP AI Agent Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/AI_Agent_Security_Cheat_Sheet.html) and [OWASP Secrets Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html) to help turn the risks I identified into practical recommendations.
+
+## 2. My Recommended Security Controls
+
+| Control | My Recommendation | Why It Matters |
+|:--------|:------------------|:---------------|
+| **1. Assign ownership and review access** | Give SupportBot a named internal owner and an identity expiry or review date. Include it in quarterly access reviews and review permissions whenever its responsibilities change. | AI agents are non-human identities. They need clear accountability and regular reviews, just like other service accounts. |
+| **2. Separate and secure credentials** | Create separate service identities for production and staging. Store secrets in an approved vault, automate rotation where supported and restrict access from unexpected networks or IP addresses. Revoke the old shared token in both environments. | A credential exposed in staging shouldn't also work in production. Secure storage and credential controls reduce the opportunity for misuse. |
+| **3. Use short-lived, task-scoped access** | Use short-lived, narrowly scoped credentials where supported. For patient-data requests, the application must verify the requesting staff member's access and return only the clinic, patient and fields needed for that request. Where supported, use delegated access so requests are made on behalf of the staff member rather than through unrestricted application access. | Credential expiry limits how long access lasts, while application authorisation controls which information can be retrieved. Both are needed to reduce unnecessary exposure. |
+| **4. Keep sensitive actions under human control** | Keep patient and billing access read-only. Permit support-ticket creation and limited updates, but remove SupportBot's ability to issue refunds, change patient contact details, send emails independently or delete ticket history. Allow it to draft replies, with authorised staff approving and carrying out sensitive actions through enforced workflows. | SupportBot can handle its intended support tasks without independently making financial decisions or changing sensitive patient information. |
+| **5. Log and monitor every action** | Record authentication, API requests and agent actions against SupportBot's identity, with the associated requester and support request where available. Alert on bulk patient-record reads, unexpected source IPs and activity outside agreed operating hours, where applicable. Protect audit records from unauthorised changes and avoid recording API tokens or unnecessary patient information. | Monitoring helps the security team identify suspicious behaviour. Protected audit records provide reliable evidence without creating another source of sensitive-data exposure. |
+
+## 3. What SupportBot Should Be Allowed to Do
+
+I would keep SupportBot focused on its original responsibilities.
+
+| Task | Target Access |
+|:-----|:--------------|
+| Answer general support questions | Read approved help-centre articles. |
+| Answer appointment or billing-status questions | Read only the necessary information after the application verifies the requesting staff member's access. |
+| Create and update support tickets | Use restricted permissions to create tickets and make permitted updates relevant to the support request. |
+| Respond to clinic staff | Draft replies for an authorised human agent to approve and send. |
+| Issue refunds | No direct permission. Refunds remain with authorised staff under the appropriate approval process. |
+| Update patient contact details or delete ticket history | No permission. These actions remain outside SupportBot's role. |
+
+This would allow SupportBot to perform its intended support duties without retaining unnecessary authority over patient records or financial transactions.
+
+## 4. How I Would Verify the Controls
+
+I wouldn't consider these recommendations complete just because new permissions and policies had been configured.
+
+As an IAM analyst, I would review the updated identity and access settings and work with IT, application and security teams to verify that:
+
+- The old shared API token has been revoked and is rejected in both production and staging.
+- Production and staging use separate identities and credentials, and staging credentials cannot be used in production.
+- SupportBot has a named owner, an identity review date and a scheduled quarterly access review.
+- SupportBot can still answer authorised status questions, create support tickets and make permitted ticket updates.
+- A staff member cannot use SupportBot to retrieve information about a patient or clinic they are not authorised to access.
+- Short-lived credentials stop working after expiry, where implemented.
+- Attempts to issue refunds, change patient details, send emails directly or delete ticket history are denied.
+- Unusual bulk access and requests from unexpected sources generate the expected logs and alerts.
+- Audit records contain the identifiers needed for investigation without exposing tokens or unnecessary patient information.
+
+**The important part is checking that restrictions are actually enforced**, not simply documenting what SupportBot is supposed to do.
+
+## 5. Final Assessment
+
+**My recommendation is to retain SupportBot as a support assistant, with restricted access, clear ownership and independently enforced authorisation.**
+
+The proposed controls would reduce the risk of credential misuse and unnecessary exposure of patient information while preserving the agent's intended support functions.
+
+These controls would need to be implemented and tested by the relevant teams before SupportBot could be considered ready for a secure return to service.
+
 
 ---
 
-## 1. Security Controls Overview
-
-This assessment recommends security controls to reduce the risks identified in SupportBot's permission review, identity governance assessment and suspicious activity analysis.
-
-SupportBot requires access to approved support information and limited ticket-management functions. However, its current identity configuration includes excessive permissions, weak credential management and insufficient oversight of sensitive actions.
-
-The objective is to propose a more secure operating model based on least privilege, accountable identity ownership, credential security, monitoring and separation of duties.
-
-## 2. Recommended Security Controls
-
-| ID | Control Area | Recommended Control | Risk Addressed |
-|---|---|---|---|
-| C-01 | Credential security and environment separation | Use separate production and staging identities and credentials, with secure storage, expiry, rotation and revocation procedures. | Long-lived credentials and shared access across environments |
-| C-02 | Identity ownership and access reviews | Assign accountable business and technical owners, with quarterly and change-triggered identity and access reviews. | Missing ownership and unreviewed access |
-| C-03 | Least-privilege access | Remove unnecessary permissions and restrict retained access to approved support workflows. | Excessive access to patient, financial and support data |
-| C-04 | Activity monitoring and alerting | Monitor authentication and API activity, with alerts for unusual access patterns and sensitive actions. | Potential credential misuse or unauthorised activity going undetected |
-| C-05 | Separation of duties and human approval | Require authorised employees to approve and execute sensitive financial, patient-data and communication actions. | Unauthorised changes, refunds and outgoing communications |
-
-## 3. Proposed Control Design
-
-### C-01 — Credential Security and Environment Separation
-
-SupportBot should use separate identities and credentials for production and staging.
-
-Recommended measures include:
-
-- Replace the existing shared API token through a controlled process.
-- Store credentials securely rather than exposing them in application code or configuration files.
-- Apply appropriate credential expiry and rotation requirements.
-- Establish a documented process for revoking compromised or unnecessary credentials.
-- Verify that replaced or revoked credentials can no longer authenticate.
-
-**Expected Outcome:** Reduce the risk of prolonged credential misuse and prevent a credential exposed in one environment from automatically providing access to another.
-
-### C-02 — Identity Ownership and Access Reviews
-
-SupportBot should have clearly assigned business and technical owners responsible for its ongoing management.
-
-Recommended measures include:
-
-- Assign and document accountable identity owners.
-- Define responsibility for credential management, access approval and identity retirement.
-- Review the identity's business purpose and assigned permissions quarterly.
-- Trigger additional reviews following changes to ownership, functionality or access requirements.
-- Record review decisions and required remediation actions.
-
-**Expected Outcome:** Establish accountability and ensure that SupportBot's identity and access remain appropriate throughout its lifecycle.
-
-### C-03 — Least-Privilege Access
-
-SupportBot should retain only the permissions required to perform its approved support responsibilities.
-
-Recommended measures include:
-
-- Retain access to approved help-centre articles.
-- Restrict billing-summary access to relevant information for authenticated and authorised clinic staff.
-- Allow support-ticket creation and limited updates within defined workflows.
-- Remove unrestricted access to full patient records and payment data.
-- Remove permissions to change patient contact details, issue refunds, send emails independently or delete ticket history.
-
-**Expected Outcome:** Reduce unnecessary exposure to sensitive information and limit the actions available if SupportBot's identity is misused.
-
-The detailed permission decisions are documented in [02 — Permission Review](02-Permission-Review.md).
-
-### C-04 — Activity Monitoring and Alerting
-
-SupportBot's authentication and API activity should be logged and monitored for unusual behaviour.
-
-Recommended measures include:
-
-- Record authentication attempts, API requests and sensitive actions.
-- Alert on unusually high patient-record access volumes or concentrated access within short periods.
-- Alert on access from unfamiliar source IP addresses, unusual activity patterns and unexpected sensitive actions.
-- Monitor unexpected financial transactions, patient-data changes and outgoing communications.
-- Retain relevant logs according to organisational security and investigation requirements.
-
-**Expected Outcome:** Improve the ability to identify suspicious activity promptly and provide evidence for incident investigation.
-
-The suspicious access event and initial IAM response are documented in [04 — Suspicious Activity Assessment](04-Suspicious-Activity-Assessment.md).
-
-### C-05 — Separation of Duties and Human Approval
-
-SupportBot should assist with support workflows without independently approving or executing sensitive actions.
-
-Recommended measures include:
-
-- Allow SupportBot to gather information and prepare support tickets within approved workflows.
-- Route patient-contact changes to authorised employees for verification, approval and execution.
-- Require authorised Finance personnel to review, approve and execute refunds.
-- Require authorised employees to review, approve and send outgoing support communications.
-- Record who approved and executed sensitive actions, together with the relevant timestamps.
-
-**Expected Outcome:** Maintain human accountability for financial transactions, changes to patient information and external communications.
-
-## 4. Should SupportBot Approve Refunds?
-
-**Recommendation: No.**
-
-SupportBot should not independently approve or issue refunds, including transactions below the existing $500 threshold.
-
-Refund requests may involve misunderstood customer instructions, incorrect billing information or circumstances requiring human judgement.
-
-SupportBot may help collect the relevant information, create a support ticket and prepare a recommendation. However, an authorised Finance employee should review the request, make the approval decision and execute the transaction.
-
-This separation of duties reduces the risk of incorrect or unauthorised refunds and ensures that financial decisions remain attributable to an accountable employee.
-
-## 5. Recommended Implementation Priorities
-
-| Priority | Recommended Action | Reason |
-|---|---|---|
-| Immediate | Coordinate incident investigation and containment of the potentially compromised credential. | Address the suspicious patient-record access event. |
-| High | Replace the shared credential and separate production and staging access. | Reduce the risk of continued credential misuse and cross-environment exposure. |
-| High | Remove excessive permissions and restrict sensitive actions. | Limit unnecessary access to patient and financial information. |
-| High | Assign accountable owners and establish human approval requirements. | Improve governance and accountability. |
-| Ongoing | Introduce periodic access reviews, monitoring and alerting. | Support continued oversight and detection of unusual activity. |
-
-Implementation should be coordinated with the relevant security, IAM, application and business owners to manage operational dependencies and service continuity.
-
-## 6. Assessment Outcome
-
-The proposed controls address five areas of risk: credential security, identity governance, excessive permissions, suspicious activity monitoring and insufficient human oversight of sensitive actions.
-
-Together, these recommendations would allow SupportBot to continue supporting clinic staff while reducing unnecessary access and improving accountability.
-
-**Conclusion:** SupportBot should operate as a restricted support assistant, not as an autonomous authority for financial transactions, patient-data changes or outgoing communications.
+[Back to Project Overview](https://github.com/itsanitarose/IAM-AI-Agent-Security-Review)
 
