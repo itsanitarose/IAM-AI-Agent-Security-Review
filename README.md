@@ -60,17 +60,17 @@ For high-impact actions such as refunds, **SupportBot should assist with the req
 - Analysis of Tuesday's suspicious activity and three immediate response actions.
 - A proposed set of controls for securing the AI agent.
 
-## What I'm Learning
+### What I'm Learning
 
-I've been interested in AI security for some time, but investigating SupportBot confirmed that I want to explore it further.
+I've been interested in AI security for some time, and this case study confirmed that I want to explore securing AI agents further.
 
-My first assessment identified the risks, but I realised that recognising suspicious activity and knowing **exactly how to respond technically** are two different things.
+I learned that managing an AI agent's identity involves more than reviewing permissions. I needed to understand how API tokens work, the difference between rotation and revocation, and why access restrictions must be enforced outside the agent.
 
-That pushed me to research API token expiration, rotation and revocation, alongside the security controls needed for non-human identities.
+Investigating Tuesday's activity also taught me to distinguish suspicious behaviour from a confirmed breach, and to understand where my responsibilities as an IAM analyst end and the incident-response team's begin.
 
-I'm using what I learn to revisit my initial recommendations and make them more specific.
+The question about automated refunds pushed my thinking further. Even when AI is allowed to make decisions, an organisation cannot simply wash its hands of responsibility. Human oversight, decision records and accountability still matter.
 
-**The lesson I'm taking forward is that identifying a risk is only the beginning. I also need to understand how the proposed control works and whether it would actually reduce that risk.**
+**My biggest takeaway:** Identifying a risk is only the beginning. I want to understand how to prevent it, verify that the controls work and make sure someone remains accountable when things go wrong.
 
 ## Explore the Investigation
 
