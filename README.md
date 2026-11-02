@@ -1,4 +1,5 @@
-# IAM: The Agent With Too Many Keys
+# IAM: AI Agent Security Review
+
 
 ## The Scenario
 
