@@ -1,6 +1,6 @@
 # IAM Skills Map
 
-**Northwind Health | IAM AI Agent Security Review**
+**Northwind Health | IAM: AI Agent Security Review**
 
 This map connects the IAM job requirements I'm researching to the skills demonstrated in my SupportBot case study.
 
