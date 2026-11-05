@@ -20,16 +20,12 @@ This map connects the IAM job requirements I'm researching to the skills demonst
 | **Security Accountability and Human Oversight** | [06. Digging Deeper](documents/06.%20Digging%20Deeper.md): Examined who remains accountable for automated refund decisions and the need for human oversight, decision records, sampling and corrective action. |
 <br>
 
-## 🔄 Actively Learning
+## 🔍 Areas of Interest
 
-*Beyond the core job requirements.*
-
-- **PowerShell & Microsoft Graph for IAM:** Automating identity tasks, querying directory data and managing access.
-- **Non-Human Identity Management:** Service account lifecycles, ownership, credential management and accountability.
-- **AI Agent Identity Security:** Agent identities, permissions, APIs, tools, connectors and delegated access.
+- **Non-Human Identity Management:** Service accounts, ownership and credential management.
+- **AI Agent Security:** Agent identities, permissions and access controls.
 
 ---
 
-
-[Back to Project Overview](./README.md)
+[Back to Project Overview](https://github.com/itsanitarose)
 
