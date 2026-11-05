@@ -1,32 +1,45 @@
+
 # IAM: AI Agent Security Review
 
+## 🎫 The Ticket
 
-## The Scenario
+It's 19 October 2026, my third week on the security team at Northwind Health. This time, the ticket concerns SupportBot, an AI agent introduced to help clinic staff with appointment and billing questions.
 
-It's my third week on the security team at Northwind Health, and the company has started introducing AI agents across its teams.
+The IT Manager writes:
 
-One of them, **SupportBot**, was launched to help clinic staff with appointment and billing questions, but nobody has reviewed its access since it was created.
+> Support launched an AI agent called SupportBot last year. Nobody ever reviewed its access. **I need you to review what it can do, tell me what's wrong with how it's set up, and check last week's activity. Then show me what it should look like.**
 
 <br>
 
-### 🎫 The Ticket
+This isn't a normal access review. There's no person on the other end. So what exactly am I dealing with?
 
-**Manager's Request:**
-
-> "Support launched an AI agent called SupportBot last year. Nobody ever reviewed its access. I need you to review what it can do, tell me what's wrong with how it's set up, and check last week's activity. Then show me what it should look like."
+<br>
 
 ## My Investigation
 
-SupportBot operates through a service account and API token. It was created 14 months ago by a contractor who has since left, has no named owner and uses a token that never expires.
+Until now, every account I've reviewed had a person behind it. SupportBot is different.
 
-It also has nine permissions, including access to full patient records and the ability to issue refunds without human approval.
+There are three things I need to separate:
 
-Four questions guided my investigation:
+- **SupportBot:** The AI agent carrying out the work.
+- **`svc-supportbot`:** The service account it operates through.
+- **API token:** The credential used to authenticate its requests.
 
-- **Does SupportBot need every permission it has?**
-- **Who is responsible for an AI agent's identity and credentials?**
-- **Does its recent activity suggest that something is wrong?**
-- **How can we secure the agent without stopping it from helping clinic staff?**
+
+
+Keeping them clear helps me see what is what.
+
+I started with SupportBot's [identity record](#), then checked its [permissions](#).
+
+The problem became clearer: an agent with no named owner, a token that never expires, and permissions that go beyond its support role.
+
+That left me with four questions:
+
+1. Does SupportBot need every permission it has?
+2. Who is responsible for its identity and credentials?
+3. Does its recent activity suggest something is wrong?
+4. How can I secure the agent without stopping it from helping clinic staff?
+
 
 ## What I Noticed
 
