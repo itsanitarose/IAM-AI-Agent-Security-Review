@@ -25,21 +25,20 @@ There are three things I need to separate:
 - **`svc-supportbot`:** The service account it operates through.
 - **API token:** The credential used to authenticate its requests.
 
-
-Keeping them clear helps me see what is what.
-
 <br>
 
-I started with SupportBot's [identity record](Document/01.%20Source%20Data.md), then checked its [permissions](Document/02.%20Permission%20Review.md). The problem became clearer: an agent with no named owner, a token that never expires, and permissions that go beyond its support role.
+With those three parts clear, I started with SupportBot's [identity record](Document/01.%20Source%20Data.md), then checked its [permissions](Document/02.%20Permission%20Review.md).
 
-That left me with four questions:
+I found an agent with no named owner, a token that never expires, and access that goes beyond its support role.
+
+That raised four questions:
 
 1. Does SupportBot need every permission it has?
 2. Who is responsible for its identity and credentials?
 3. Does its recent activity suggest something is wrong?
 4. How can I secure the agent without stopping it from helping clinic staff?
 
-
+<br>
 
 ## What I Noticed
 
