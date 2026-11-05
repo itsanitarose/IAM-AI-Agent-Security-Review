@@ -87,4 +87,4 @@ The question about automated refunds pushed my thinking further. Even when AI is
 
 [← Week 2: Permission Sprawl & RBAC](https://github.com/itsanitarose/IAM-Permission-Sprawl-RBAC) · [All Case Studies](https://github.com/itsanitarose/IAM-Case-Studies)
 
-*Northwind Health is fictional. This is independent work. No production systems were changed.*
+*<sub>Northwind Health is fictional. This is independent work. No production systems were changed.</sub>*
