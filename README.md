@@ -58,6 +58,8 @@ The activity doesn't match SupportBot's normal support duties, but **the evidenc
 
 I would treat it as a suspected compromise, recommend immediate containment and work with the incident-response team to examine the access logs and determine what patient information may have been exposed.
 
+<br>
+
 ## My Approach
 
 I reviewed SupportBot's nine permissions against its actual responsibilities and examined the risks created by its identity setup.
@@ -66,7 +68,9 @@ I also researched AI agent security guidance from **Microsoft Learn** and **OWAS
 
 My proposed approach includes restricting sensitive data access, removing unnecessary financial authority, improving token security and introducing clear ownership and review processes.
 
-For high-impact actions such as refunds, **SupportBot should assist with the request, while an authorised human makes the financial decision.**
+For high impact actions such as refunds, **SupportBot should assist with the request, while an authorised human makes the financial decision.**
+
+<br>
 
 ## What This Case Study Covers
 
