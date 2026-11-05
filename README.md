@@ -7,9 +7,7 @@ It's my third week on the security team at Northwind Health, and the company has
 
 One of them, **SupportBot**, was launched to help clinic staff with appointment and billing questions, but nobody has reviewed its access since it was created.
 
-<sub><em>* Fictional scenario. Real world analysis.</em></sub>
-<br><br>
-
+<br>
 
 ### 🎫 The Ticket
 
