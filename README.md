@@ -72,16 +72,9 @@ For high impact actions such as refunds, **SupportBot should assist with the req
 
 <br>
 
-## What This Case Study Covers
 
-- A permission-by-permission review of SupportBot's access.
-- Governance findings affecting its identity and API token.
-- Analysis of Tuesday's suspicious activity and three immediate response actions.
-- A proposed set of controls for securing the AI agent.
 
-<br>
-
-### What I'm Learning
+## What I'm Learning
 
 I've been interested in AI security for some time, and this case study confirmed that I want to explore securing AI agents further.
 
